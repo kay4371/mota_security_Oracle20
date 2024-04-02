@@ -5294,52 +5294,52 @@ async function queryMongoForAllDataAndLog() {
     }
   }
 //////////////////////////////////////////////////////////////////////////////////
-// // WebSocket server logic
-// wss.on('connection', (ws) => {
-//     console.log('Client connected');
+// WebSocket server logic
+wss.on('connection', (ws) => {
+    console.log('Client connected');
   
-//     // Handle incoming WebSocket messages from clients
-//     ws.on('message', (message) => {
-//       console.log(`Received: ${message}`);
-//     });
+    // Handle incoming WebSocket messages from clients
+    ws.on('message', (message) => {
+      console.log(`Received: ${message}`);
+    });
   
-//     // Add the client to the appropriate client list based on the purpose
-//     ws.on('close', () => {
-//       // Remove the client from the corresponding list
-//       hrClients = hrClients.filter((client) => client !== ws);
-//       securityClients = securityClients.filter((client) => client !== ws);
-//     });
+    // Add the client to the appropriate client list based on the purpose
+    ws.on('close', () => {
+      // Remove the client from the corresponding list
+      hrClients = hrClients.filter((client) => client !== ws);
+      securityClients = securityClients.filter((client) => client !== ws);
+    });
   
-//     const sentEntryIds = new Set(); // Initialize a Set to store sent entry IDs
+    const sentEntryIds = new Set(); // Initialize a Set to store sent entry IDs
   
-//     // Periodically query MongoDB and send updates to clients
-//     const queryInterval = setInterval(async () => {
-//       try {
-//         const allData = await queryMongoForAllDataAndLog();
+    // Periodically query MongoDB and send updates to clients
+    const queryInterval = setInterval(async () => {
+      try {
+        const allData = await queryMongoForAllDataAndLog();
   
-//         // Filter out entries that have already been sent
-//         const newEntries = allData.filter((entry) => !sentEntryIds.has(entry._id));
+        // Filter out entries that have already been sent
+        const newEntries = allData.filter((entry) => !sentEntryIds.has(entry._id));
   
-//         // Add new entry IDs to the set of sent entry IDs
-//         newEntries.forEach((entry) => sentEntryIds.add(entry._id));
+        // Add new entry IDs to the set of sent entry IDs
+        newEntries.forEach((entry) => sentEntryIds.add(entry._id));
   
-//         // Send the new data as a JSON string to connected clients
+        // Send the new data as a JSON string to connected clients
   
-//         // Before sending a message
-//         // console.log('Sending message:', JSON.stringify(newEntries));
+        // Before sending a message
+        // console.log('Sending message:', JSON.stringify(newEntries));
   
-//         ws.send(JSON.stringify(newEntries));
-//       } catch (error) {
-//         console.error('Error sending data to clients:', error);
-//       }
-//     }, 1000); // Adjust the interval as needed (e.g., every 5 seconds)
+        ws.send(JSON.stringify(newEntries));
+      } catch (error) {
+        console.error('Error sending data to clients:', error);
+      }
+    }, 1000); // Adjust the interval as needed (e.g., every 5 seconds)
   
-//     // When a client disconnects, clear the query interval
-//     ws.on('close', () => {
-//       console.log('Client disconnected');
-//       clearInterval(queryInterval);
-//     });
-//   });
+    // When a client disconnects, clear the query interval
+    ws.on('close', () => {
+      console.log('Client disconnected');
+      clearInterval(queryInterval);
+    });
+  });
 
 //////////////////////////////////////////////////////////////////////////////////
 // // WebSocket server logic
@@ -5416,79 +5416,81 @@ async function queryMongoForAllDataAndLog() {
 //   });
 // });
 // Add the global error handler for the WebSocket server
-wss.on('error', (error) => {
-  if (error.code === 'EPIPE') {
-    console.error('WebSocket client disconnected unexpectedly.');
-  } else {
-    console.error('WebSocket server error:', error);
-  }
-});
 
-// WebSocket server logic
-wss.on('connection', (ws) => {
-  console.log('Client connected');
 
-  // Handle incoming WebSocket messages from clients
-  ws.on('message', (message) => {
-    console.log(`Received: ${message}`);
-  });
+// wss.on('error', (error) => {
+//   if (error.code === 'EPIPE') {
+//     console.error('WebSocket client disconnected unexpectedly.');
+//   } else {
+//     console.error('WebSocket server error:', error);
+//   }
+// });
 
-  // Add the client to the appropriate client list based on the purpose
-  ws.on('close', () => {
-    // Remove the client from the corresponding list
-    hrClients = hrClients.filter((client) => client !== ws);
-    securityClients = securityClients.filter((client) => client !== ws);
-  });
+// // WebSocket server logic
+// wss.on('connection', (ws) => {
+//   console.log('Client connected');
 
-  // Add the error handling code here
-  ws.on('error', (error) => {
-    if (error.code === 'EPIPE') {
-      console.error('WebSocket client disconnected unexpectedly.');
-    } else {
-      console.error('WebSocket error:', error);
-    }
-  });
+//   // Handle incoming WebSocket messages from clients
+//   ws.on('message', (message) => {
+//     console.log(`Received: ${message}`);
+//   });
 
-  const sentEntryIds = new Set(); // Initialize a Set to store sent entry IDs
+//   // Add the client to the appropriate client list based on the purpose
+//   ws.on('close', () => {
+//     // Remove the client from the corresponding list
+//     hrClients = hrClients.filter((client) => client !== ws);
+//     securityClients = securityClients.filter((client) => client !== ws);
+//   });
 
-  // Periodically query MongoDB and send updates to clients
-  const queryInterval = setInterval(async () => {
-    try {
-      const allData = await queryMongoForAllDataAndLog();
+//   // Add the error handling code here
+//   ws.on('error', (error) => {
+//     if (error.code === 'EPIPE') {
+//       console.error('WebSocket client disconnected unexpectedly.');
+//     } else {
+//       console.error('WebSocket error:', error);
+//     }
+//   });
 
-      // Filter out entries that have already been sent
-      const newEntries = allData.filter((entry) => !sentEntryIds.has(entry._id));
+//   const sentEntryIds = new Set(); // Initialize a Set to store sent entry IDs
 
-      // Add new entry IDs to the set of sent entry IDs
-      newEntries.forEach((entry) => sentEntryIds.add(entry._id));
+//   // Periodically query MongoDB and send updates to clients
+//   const queryInterval = setInterval(async () => {
+//     try {
+//       const allData = await queryMongoForAllDataAndLog();
 
-      // Send the new data as a JSON string to connected clients
-      // Before sending a message
-      // console.log('Sending message:', JSON.stringify(newEntries));
+//       // Filter out entries that have already been sent
+//       const newEntries = allData.filter((entry) => !sentEntryIds.has(entry._id));
 
-      // Check the WebSocket connection state before sending data
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(newEntries), (error) => {
-          if (error && error.code === 'EPIPE') {
-            console.error('WebSocket client disconnected unexpectedly.');
-          } else if (error) {
-            console.error('WebSocket error:', error);
-          }
-        });
-      } else {
-        console.warn('WebSocket connection is not open, skipping data send.');
-      }
-    } catch (error) {
-      console.error('Error sending data to clients:', error);
-    }
-  }, 1000); // Adjust the interval as needed (e.g., every 5 seconds)
+//       // Add new entry IDs to the set of sent entry IDs
+//       newEntries.forEach((entry) => sentEntryIds.add(entry._id));
 
-  // When a client disconnects, clear the query interval
-  ws.on('close', () => {
-    console.log('Client disconnected');
-    clearInterval(queryInterval);
-  });
-});
+//       // Send the new data as a JSON string to connected clients
+//       // Before sending a message
+//       // console.log('Sending message:', JSON.stringify(newEntries));
+
+//       // Check the WebSocket connection state before sending data
+//       if (ws.readyState === WebSocket.OPEN) {
+//         ws.send(JSON.stringify(newEntries), (error) => {
+//           if (error && error.code === 'EPIPE') {
+//             console.error('WebSocket client disconnected unexpectedly.');
+//           } else if (error) {
+//             console.error('WebSocket error:', error);
+//           }
+//         });
+//       } else {
+//         console.warn('WebSocket connection is not open, skipping data send.');
+//       }
+//     } catch (error) {
+//       console.error('Error sending data to clients:', error);
+//     }
+//   }, 1000); // Adjust the interval as needed (e.g., every 5 seconds)
+
+//   // When a client disconnects, clear the query interval
+//   ws.on('close', () => {
+//     console.log('Client disconnected');
+//     clearInterval(queryInterval);
+//   });
+// });
 ////////////////////////////////////////////////////////////////
   
   const serverWebSocket = new WebSocket.Server({ port: 8081 });
@@ -6976,57 +6978,57 @@ app.post('/receive_gate_pass', async function (req, res) {
     await client.close(); // Close the MongoDB client connection
   }
 });
-////////////////////////unlock
-// // Helper function to generate gate pass ticket from driver data
-// function generateGatePassTicket(driverData) {
-//   // Generate the ticket using driver data
-//   const gatePassTicket = {
-//     driverName: driverData.name,
-//     vehicleDetails: driverData.vehicleDetails,
-//     accessAuthorization: 'Authorized', // Set the access authorization status
-//     // Include additional ticket information
-//     // ...
-//   };
+//////////////////////unlock
+// Helper function to generate gate pass ticket from driver data
+function generateGatePassTicket(driverData) {
+  // Generate the ticket using driver data
+  const gatePassTicket = {
+    driverName: driverData.name,
+    vehicleDetails: driverData.vehicleDetails,
+    accessAuthorization: 'Authorized', // Set the access authorization status
+    // Include additional ticket information
+    // ...
+  };
 
-//   // Return the generated ticket object
-//   return gatePassTicket;
-// }
+  // Return the generated ticket object
+  return gatePassTicket;
+}
 
-// // Helper function to generate the gate pass ticket in PDF format
-// function generateTicketPDF(ticketData) {
-//   return new Promise((resolve, reject) => {
-//     const doc = new PDFDocument();
+// Helper function to generate the gate pass ticket in PDF format
+function generateTicketPDF(ticketData) {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument();
 
-//     // Set the PDF document properties
-//     doc.info.Title = 'Gate Pass Ticket';
-//     doc.info.Author = 'Your Company';
+    // Set the PDF document properties
+    doc.info.Title = 'Gate Pass Ticket';
+    doc.info.Author = 'Your Company';
 
-//     // Create the PDF content
-//     doc.font('Helvetica-Bold').fontSize(14).text('Gate Pass Ticket', { align: 'center' });
-//     doc.moveDown();
-//     doc.font('Helvetica').fontSize(12).text(`Driver Name: ${ticketData.driverName}`);
-//     doc.moveDown();
-//     doc.font('Helvetica').fontSize(12).text(`Vehicle Details: ${ticketData.vehicleDetails}`);
-//     doc.moveDown();
-//     doc.font('Helvetica').fontSize(12).text(`Access Authorization: ${ticketData.accessAuthorization}`);
-//     // Include additional ticket information
-//     // ...
+    // Create the PDF content
+    doc.font('Helvetica-Bold').fontSize(14).text('Gate Pass Ticket', { align: 'center' });
+    doc.moveDown();
+    doc.font('Helvetica').fontSize(12).text(`Driver Name: ${ticketData.driverName}`);
+    doc.moveDown();
+    doc.font('Helvetica').fontSize(12).text(`Vehicle Details: ${ticketData.vehicleDetails}`);
+    doc.moveDown();
+    doc.font('Helvetica').fontSize(12).text(`Access Authorization: ${ticketData.accessAuthorization}`);
+    // Include additional ticket information
+    // ...
 
-//     // Generate the ticket file
-//     const ticketPath = 'gate_pass_ticket.pdf';
-//     const stream = fs.createWriteStream(ticketPath);
-//     doc.pipe(stream);
-//     doc.end();
+    // Generate the ticket file
+    const ticketPath = 'gate_pass_ticket.pdf';
+    const stream = fs.createWriteStream(ticketPath);
+    doc.pipe(stream);
+    doc.end();
 
-//     stream.on('finish', () => {
-//       resolve(ticketPath);
-//     });
+    stream.on('finish', () => {
+      resolve(ticketPath);
+    });
 
-//     stream.on('error', (error) => {
-//       reject(error);
-//     });
-//   });
-// }
+    stream.on('error', (error) => {
+      reject(error);
+    });
+  });
+}
 
 
 app.delete('/deleteDriver/:id', async function (req, res) {
@@ -8845,166 +8847,166 @@ ${motaEngilMapSVG}
 //   });
 // };
 //////////////////////////////////////////////////////////////////////////////////
-const downloadsFolderPath = path.join(__dirname, '..', 'downloads');
-const uniqueFilename = `Mota-Engil Nigeria National Weekly_Security Report ${formattedToday}.pdf`;
-const pdfPath = path.join(downloadsFolderPath, uniqueFilename);
+// const downloadsFolderPath = path.join(__dirname, '..', 'downloads');
+// const uniqueFilename = `Mota-Engil Nigeria National Weekly_Security Report ${formattedToday}.pdf`;
+// const pdfPath = path.join(downloadsFolderPath, uniqueFilename);
 
-const generate_incident_report_PDF = (pdfData, filename, callback) => {
-  console.log('Generating PDF...');
-  pdf.create(pdfData).toFile(filename, (err, res) => {
-    if (err) {
-      console.error('Error during PDF generation:', err);
-      callback(err);
-    } else {
-      console.log('PDF generation completed.');
-      console.log('Saved PDF file:', filename);
-      fs.readFile(filename, 'utf8', (err, data) => {
-        if (err) {
-          console.error('Error reading generated PDF file:', err);
-          callback(err);
-        } else {
-          console.log('PDF file content:', data); // Log the PDF file content
-          callback();
-        }
-      });
-    }
-  });
-};
-
-
-/////////////////////////unlock
-const sendMessageToStaffs = async (groupId, pdfData, pdfFilename) => {
-  try {
-    const pdfResponse = await axios.post(
-      'https://gate.whapi.cloud/messages/document',
-      {
-        to: `${staff_no}@s.whatsapp.net`,
-        media: `data:application/octet-stream;name=${pdfFilename};base64,${pdfData}`,
-      },
-      {
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    console.log('PDF file sent successfully:', pdfResponse.data);
-  } catch (error) {
-    console.error('Error sending message and PDF:', error.message);
-  }
-};
-
-const securityReportHTML = generate_security_report_PDF();
-
-generate_incident_report_PDF(securityReportHTML, pdfPath, (error) => {
-  if (error) {
-    console.error('PDF generation failed:', error);
-  } else {
-    const pdfData = fs.readFileSync(pdfPath, { encoding: 'base64' });
-    sendMessageToStaffs(groupId, pdfData, uniqueFilename);
-  }
-});
+// const generate_incident_report_PDF = (pdfData, filename, callback) => {
+//   console.log('Generating PDF...');
+//   pdf.create(pdfData).toFile(filename, (err, res) => {
+//     if (err) {
+//       console.error('Error during PDF generation:', err);
+//       callback(err);
+//     } else {
+//       console.log('PDF generation completed.');
+//       console.log('Saved PDF file:', filename);
+//       fs.readFile(filename, 'utf8', (err, data) => {
+//         if (err) {
+//           console.error('Error reading generated PDF file:', err);
+//           callback(err);
+//         } else {
+//           console.log('PDF file content:', data); // Log the PDF file content
+//           callback();
+//         }
+//       });
+//     }
+//   });
+// };
 
 
-setInterval(() => {
-  const securityReportHTML = generate_security_report_PDF();
-  generate_incident_report_PDF(securityReportHTML, pdfPath, (error) => {
-    if (error) {
-      console.error('PDF generation failed:', error);
-    } else {
-      const pdfData = fs.readFileSync(pdfPath, { encoding: 'base64' });
-      sendMessageToStaffs(groupId, pdfData, uniqueFilename);
-    }
-  });
-}, 7 * 24 * 60 * 60 * 1000);
-////////////////////////////////////////////////////////////////////////////
+// /////////////////////////unlock
+// const sendMessageToStaffs = async (groupId, pdfData, pdfFilename) => {
+//   try {
+//     const pdfResponse = await axios.post(
+//       'https://gate.whapi.cloud/messages/document',
+//       {
+//         to: `${staff_no}@s.whatsapp.net`,
+//         media: `data:application/octet-stream;name=${pdfFilename};base64,${pdfData}`,
+//       },
+//       {
+//         headers: {
+//           Accept: 'application/json',
+//           'Content-Type': 'application/json',
+//           Authorization: `Bearer ${token}`,
+//         },
+//       }
+//     );
 
-/////////////////////////////////////////////////////////
-app.post('/OtherIddata', async function (req, res) {
-  const driverData = req.body;
+//     console.log('PDF file sent successfully:', pdfResponse.data);
+//   } catch (error) {
+//     console.error('Error sending message and PDF:', error.message);
+//   }
+// };
 
-  try {
-    const client = new MongoClient(uri);
-    await client.connect();
+// const securityReportHTML = generate_security_report_PDF();
 
-    const database = client.db('olukayode_sage');
-    const driversHistoryCollection = database.collection('OtherIDs');
-
-    // Insert the driver data into the drivers history collection
-    const result = await driversHistoryCollection.insertOne(driverData);
-    console.log('Driver added to otherID:', result);
-
-    res.status(200).json({ message: 'Driver added to OtherId' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('An error occurred while adding the driver to history');
-  } finally {
-    await client.close();
-  }
-});
-
-app.post('/extractOtherDetails', async (req, res) => {
-  try {
-    const client = new MongoClient(uri);
-    await client.connect();
-
-    const database = client.db('olukayode_sage');
-    const driversHistoryCollection = database.collection('OtherIDs');
-
-    // Fetch the required data from the database
-    const token1Data = await driversHistoryCollection.findOne({ idType: 'Token 1' });
-    const groupIDData = await driversHistoryCollection.findOne({ idType: 'GroupID' });
-
-    // Log the retrieved data
-    console.log('Extracted Details:');
-    console.log('Token1:', token1Data.idNumber);
-    console.log('GroupID:', groupIDData.idNumber);
-
-    // Send response with the extracted data
-    res.status(200).json({
-      message: 'Details extracted successfully',
-      token1: token1Data.idNumber,
-      groupID: groupIDData.idNumber
-    });
-  } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while extracting details' });
-  } finally {
-    await client.close();
-  }
-});
+// generate_incident_report_PDF(securityReportHTML, pdfPath, (error) => {
+//   if (error) {
+//     console.error('PDF generation failed:', error);
+//   } else {
+//     const pdfData = fs.readFileSync(pdfPath, { encoding: 'base64' });
+//     sendMessageToStaffs(groupId, pdfData, uniqueFilename);
+//   }
+// });
 
 
-app.post('/send_expatriate_parameters', async (req, res) => {
-  const { expatriate_name, expatriate_nationality, expatriate_phone_number, expatriate_residence_nigeria, expatriate_department } = req.body;
+// setInterval(() => {
+//   const securityReportHTML = generate_security_report_PDF();
+//   generate_incident_report_PDF(securityReportHTML, pdfPath, (error) => {
+//     if (error) {
+//       console.error('PDF generation failed:', error);
+//     } else {
+//       const pdfData = fs.readFileSync(pdfPath, { encoding: 'base64' });
+//       sendMessageToStaffs(groupId, pdfData, uniqueFilename);
+//     }
+//   });
+// }, 7 * 24 * 60 * 60 * 1000);
+// ////////////////////////////////////////////////////////////////////////////
 
-  try {
-      await client.connect();
+// /////////////////////////////////////////////////////////
+// app.post('/OtherIddata', async function (req, res) {
+//   const driverData = req.body;
 
-      const database = client.db('olukayode_sage');
-      const expatriates = database.collection('expatriates_collection');
+//   try {
+//     const client = new MongoClient(uri);
+//     await client.connect();
 
-      // Insert the expatriate data into the expatriates collection
-      const result = await expatriates.insertOne({
-          name: expatriate_name,
-          countryOfOrigin: expatriate_nationality,
-          phoneNumber: expatriate_phone_number,
-          houseAddress: expatriate_residence_nigeria,
-          unit: expatriate_department
-      });
-      console.log('Expatriate added to collection:', result);
+//     const database = client.db('olukayode_sage');
+//     const driversHistoryCollection = database.collection('OtherIDs');
 
-      // Respond with success message
-      res.status(200).json({ message: 'Expatriate added to collection' });
-  } catch (error) {
-      console.error('An error occurred:', error);
-      res.status(500).send('An error occurred while adding the expatriate to the collection');
-  } finally {
-      await client.close();
-  }
-});
+//     // Insert the driver data into the drivers history collection
+//     const result = await driversHistoryCollection.insertOne(driverData);
+//     console.log('Driver added to otherID:', result);
+
+//     res.status(200).json({ message: 'Driver added to OtherId' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('An error occurred while adding the driver to history');
+//   } finally {
+//     await client.close();
+//   }
+// });
+
+// app.post('/extractOtherDetails', async (req, res) => {
+//   try {
+//     const client = new MongoClient(uri);
+//     await client.connect();
+
+//     const database = client.db('olukayode_sage');
+//     const driversHistoryCollection = database.collection('OtherIDs');
+
+//     // Fetch the required data from the database
+//     const token1Data = await driversHistoryCollection.findOne({ idType: 'Token 1' });
+//     const groupIDData = await driversHistoryCollection.findOne({ idType: 'GroupID' });
+
+//     // Log the retrieved data
+//     console.log('Extracted Details:');
+//     console.log('Token1:', token1Data.idNumber);
+//     console.log('GroupID:', groupIDData.idNumber);
+
+//     // Send response with the extracted data
+//     res.status(200).json({
+//       message: 'Details extracted successfully',
+//       token1: token1Data.idNumber,
+//       groupID: groupIDData.idNumber
+//     });
+//   } catch (error) {
+//     console.error('An error occurred:', error);
+//     res.status(500).json({ error: 'An error occurred while extracting details' });
+//   } finally {
+//     await client.close();
+//   }
+// });
+
+
+// app.post('/send_expatriate_parameters', async (req, res) => {
+//   const { expatriate_name, expatriate_nationality, expatriate_phone_number, expatriate_residence_nigeria, expatriate_department } = req.body;
+
+//   try {
+//       await client.connect();
+
+//       const database = client.db('olukayode_sage');
+//       const expatriates = database.collection('expatriates_collection');
+
+//       // Insert the expatriate data into the expatriates collection
+//       const result = await expatriates.insertOne({
+//           name: expatriate_name,
+//           countryOfOrigin: expatriate_nationality,
+//           phoneNumber: expatriate_phone_number,
+//           houseAddress: expatriate_residence_nigeria,
+//           unit: expatriate_department
+//       });
+//       console.log('Expatriate added to collection:', result);
+
+//       // Respond with success message
+//       res.status(200).json({ message: 'Expatriate added to collection' });
+//   } catch (error) {
+//       console.error('An error occurred:', error);
+//       res.status(500).send('An error occurred while adding the expatriate to the collection');
+//   } finally {
+//       await client.close();
+//   }
+// });
 //////////////////////////////////////////////////////////////
 ///////////////////////////image analysis
 //   const apiKey = 'AIzaSyCDJvJe29Gj2Zwee01dH1vpMSk6ITWMjOk'; // Replace 'YOUR_API_KEY' with your actual API key
